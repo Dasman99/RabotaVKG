@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.text import slugify
 
 
 class Category(models.Model):
@@ -8,6 +9,11 @@ class Category(models.Model):
     class Meta:
         verbose_name = 'Категория'
         verbose_name_plural = 'Категории'
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.title
@@ -30,6 +36,7 @@ class Vacancy(models.Model):
     title = models.CharField("Название", max_length=50)
     desc = models.TextField("Описание")
     require = models.TextField("Требования")
+    salary = models.IntegerField(default=0)
     company = models.CharField('Компания', max_length=100)
     create = models.DateTimeField(auto_now_add=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='categories', to_field='title')
