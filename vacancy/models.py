@@ -19,6 +19,18 @@ class Category(models.Model):
         return self.title
 
 
+class Company(models.Model):
+    title = models.CharField("Название", max_length=100)
+    desc = models.TextField("Описание", null=True)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = 'Компания'
+        verbose_name_plural = 'Компании'
+
+
 class Region(models.Model):
     state = models.CharField("Область", max_length=55, unique=True)
     city = models.CharField("Город", max_length=50, unique=True)
@@ -29,7 +41,7 @@ class Region(models.Model):
         verbose_name_plural = 'Регионы'
 
     def __str__(self):
-        return self.state
+        return f'{self.city},{self.state}'
 
 
 class Vacancy(models.Model):
@@ -37,7 +49,7 @@ class Vacancy(models.Model):
     desc = models.TextField("Описание")
     require = models.TextField("Требования")
     salary = models.IntegerField(default=0)
-    company = models.CharField('Компания', max_length=100)
+    company = models.ForeignKey(Company, max_length=100, on_delete=models.CASCADE, related_name='company')
     create = models.DateTimeField(auto_now_add=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='categories', to_field='title')
     count = models.IntegerField(default=0, null=True)
@@ -50,3 +62,14 @@ class Vacancy(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class TopVacancy(models.Model):
+    vacancy = models.ForeignKey(Vacancy, on_delete=models.CASCADE, related_name='top_vacancy')
+
+    class Meta:
+        verbose_name = "Топ Вакансии"
+        verbose_name_plural = "Топ Вакансии"
+
+    def __str__(self):
+        return f'{self.vacancy}'

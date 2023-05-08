@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from .serializers import *
 
 
-class CategoryAPI(viewsets.ModelViewSet):
+class CategoryView(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
 
@@ -19,7 +19,7 @@ class CategoryAPI(viewsets.ModelViewSet):
         return queryset
 
 
-class RegionAPI(viewsets.ModelViewSet):
+class RegionView(viewsets.ModelViewSet):
     queryset = Region.objects.all()
     serializer_class = RegionSerializer
 
@@ -27,8 +27,11 @@ class RegionAPI(viewsets.ModelViewSet):
         queryset = Region.objects.all()
 
         state = self.request.query_params.get('state')
+        city = self.request.query_params.get('city')
         if state:
             queryset = queryset.filter(state__icontains=state)
+        if city:
+            queryset = queryset.filter(city__icontains=city)
         return queryset
 
 
@@ -41,8 +44,10 @@ class VacancyViewSet(viewsets.ModelViewSet):
         queryset = Vacancy.objects.all()
 
         title = self.request.query_params.get('title')
-
         salary = self.request.query_params.get('salary')
+        state = self.request.query_params.get('state')
+        if state:
+            queryset = queryset.filter(state=state)
         if salary:
             queryset = queryset.filter(salary__icontains=salary)
         if title:
@@ -56,3 +61,13 @@ class VacancyViewSet(viewsets.ModelViewSet):
         instance.save()
         serializer = self.get_serializer(instance)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class CompanyView(viewsets.ModelViewSet):
+    queryset = Company.objects.all()
+    serializer_class = CompanySerializer
+
+
+class TopVacancyView(viewsets.ModelViewSet):
+    queryset = TopVacancy.objects.all()
+    serializer_class = TopVacancySerializer

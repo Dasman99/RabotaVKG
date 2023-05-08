@@ -22,3 +22,16 @@ class VacancySerializer(serializers.ModelSerializer):
         model = Vacancy
         fields = '__all__'
 
+
+class CompanySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Company
+        fields = '__all__'
+
+
+class TopVacancySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = TopVacancy
+        fields = '__all__'
